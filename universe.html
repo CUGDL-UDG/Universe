@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universe - Demo Universitaria</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Reset y Estilos Base --- */
+        :root {
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --background-color: #f0f4f8;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --light-text-color: #667;
+            --border-color: #dee2e6;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- Contenedor Principal --- */
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background-color: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: max-width 0.4s ease, height 0.4s ease;
+        }
+
+        .app-container.dashboard-mode {
+            max-width: 1000px;
+        }
+
+        /* --- Header --- */
+        .app-header {
+            padding: 25px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color), #0056b3);
+            color: white;
+        }
+
+        .app-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .app-header p {
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        /* --- Vistas (Páginas) --- */
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
+        }
+
+        /* --- Formularios --- */
+        .form-content {
+            padding: 30px;
+        }
+
+        .form-content h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        }
+
+        /* --- Sección de Intereses --- */
+        .interests-section {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .interests-section h4 {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .interest-category {
+            margin-bottom: 10px;
+        }
+
+        .interest-category p {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .interest-options label {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 16px;
+            margin: 0 8px 8px 0;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .interest-options input[type="checkbox"] {
+            display: none;
+        }
+
+        .interest-options input[type="checkbox"] + span {
+            display: block;
+            padding: 6px 12px;
+            background-color: #e9ecef;
+            border-radius: 16px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .interest-options input[type="checkbox"]:checked + span {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .interest-options label:hover span {
+            background-color: #ced4da;
+        }
+
+        .interest-options input[type="checkbox"]:checked + span:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* --- Botones y Enlaces --- */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .switch-view-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .switch-view-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .switch-view-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Dashboard --- */
+        .dashboard-content {
+            display: flex;
+            height: 600px;
+        }
+
+        .dashboard-nav {
+            width: 220px;
+            padding: 20px;
+            border-right: 1px solid var(--border-color);
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* <-- ARREGLO PARA EL BOTÓN DE CERRAR SESIÓN */
+        }
+
+        .nav-menu {
+            flex-grow: 1;
+        }
+
+        .dashboard-nav .profile-info {
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer; /* Añadido */
+            transition: transform 0.2s ease; /* Añadido */
+        }
+        
+        .dashboard-nav .profile-info:hover { /* Añadido */
+            transform: scale(1.03);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 10px;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .profile-info #welcome-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            word-break: break-word;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            padding: 14px 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Estilo para los items activos del menú */
+        .nav-menu li.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .nav-menu li:not(.active):not(#nav-logout-li):hover {
+            background-color: #e2e6ea;
+        }
+
+
+        /* Estilo para el botón de cerrar sesión en la lista */
+        #nav-logout-li {
+            margin-top: 20px;
+            color: white;
+            background-color: #6c757d;
+        }
+        #nav-logout-li:hover {
+            background-color: #5a6268;
+        }
+
+        .dashboard-main {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .dashboard-page {
+            display: none;
+        }
+        .dashboard-page.active {
+            display: block;
+        }
+        .dashboard-page h2 {
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        /* --- Estilos para tarjetas de contenido --- */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .content-card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .content-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        .content-card p {
+            color: var(--light-text-color);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .card-tag {
+            display: inline-block;
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+        .price-tag {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--success-color);
+            margin-top: 10px;
+        }
+
+        /* --- Estilos para Chat --- */
+        #chat-page {
+            height: 100%;
+        }
+        .chat-layout {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            height: calc(100% - 60px);
+            flex-direction: column;
+        }
+        .chat-main-content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .chat-list-container {
+            width: 280px;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .chat-list {
+            list-style: none;
+        }
+        .chat-list-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        .chat-list-item:hover {
+            background-color: #f8f9fa;
+        }
+        .chat-list-item.active {
+            background-color: #e9ecef;
+        }
+        .delete-chat-btn {
+            display: none;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 5px;
+            color: var(--error-color);
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+        .chat-list-item:hover .delete-chat-btn {
+            display: block;
+        }
+        .delete-chat-btn:hover {
+            opacity: 1;
+        }
+        .chat-list-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .chat-list-text {
+            overflow: hidden;
+        }
+        .chat-list-text h4 {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        .chat-list-text p {
+            font-size: 0.85rem;
+            color: var(--light-text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-messages-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        #chat-with-header {
+            text-align: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        #chat-with-header:hover {
+            background-color: #f8f9fa;
+        }
+        .message-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .message-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .message-container.sent {
+            justify-content: flex-end;
+        }
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            align-self: flex-end;
+        }
+        .message-container.sent .message-avatar {
+            display: none;
+        }
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+        }
+        .message-bubble.sent {
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .message-bubble.received {
+            background-color: #e9ecef;
+            color: var(--text-color);
+            border-bottom-left-radius: 4px;
+        }
+        .delete-msg-btn {
+            display: none;
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            font-size: 1rem;
+        }
+        .message-container.sent:hover .delete-msg-btn {
+            display: block;
+        }
+        .chat-input-container {
+            border-top: 1px solid var(--border-color);
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background-color: #f8f9fa;
+        }
+        .attachment-btn {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 5px;
+        }
+        #chat-message-input {
+            flex-grow: 1;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            font-size: 1rem;
+        }
+        #send-message-btn {
+            font-size: 1.3rem;
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        /* --- Estilos para Búsqueda de Perfiles --- */
+        .search-bar-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+        #search-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        #search-button {
+            width: auto;
+            padding: 12px 25px;
+            font-size: 1rem;
+        }
+        #search-results .profile-card {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        #search-results .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        .profile-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .search-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-card-info h4 {
+            font-size: 1.2rem;
+            margin: 0 0 5px 0;
+        }
+        .profile-card-info .age-info {
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+            margin: 0;
+        }
+        .interests-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            flex-grow: 1;
+        }
+        .interest-tag {
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .send-message-btn {
+            margin-top: 15px;
+            padding: 8px;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        /* --- Estilos para Página de Perfil --- */
+        #profile-page-content {
+            display: flex;
+            gap: 30px;
+        }
+        .profile-page-sidebar {
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .profile-page-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        #profile-page-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        #profile-page-age {
+            color: var(--light-text-color);
+            margin-bottom: 20px;
+        }
+        .profile-page-main {
+            flex-grow: 1;
+        }
+        .profile-page-main h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+        }
+        .profile-interests-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+
+        /* --- Notificaciones --- */
+        .notification {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        .notification.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .notification.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" id="app-container">
+        <header class="app-header">
+            <h1>Universe 🚀</h1>
+            <p>Universidad de Guadalajara</p>
+        </header>
+
+        <!-- Vista de Inicio de Sesión -->
+        <div id="login-view" class="view active">
+            <div class="form-content">
+                <h2>Iniciar Sesión</h2>
+                <div id="login-notification" class="notification"></div>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="login-email">Email Universitario</label>
+                        <input type="email" id="login-email" required value="test@universe.com">
+                    </div>
+                    <div class="input-group">
+                        <label for="login-password">Contraseña</label>
+                        <input type="password" id="login-password" required value="password123">
+                    </div>
+                    <button type="submit" class="submit-btn">Entrar</button>
+                </form>
+                <div class="switch-view-link">
+                    <p>¿No tienes cuenta? <a id="show-register">Crea una aquí</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vista de Registro -->
+        <div id="register-view" class="view">
+             <div class="form-content">
+                <h2>Crear Cuenta</h2>
+                <div id="register-notification" class="notification"></div>
+                <form id="register-form">
+                    <div class="input-group">
+                        <label for="register-fullname">Nombre Completo</label>
+                        <input type="text" id="register-fullname" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="register-email">Email Universitario</label>
+                        <input type="email" id="register-email" required 
+                               pattern=".+@(.+\.)?udg\.mx$" 
+                               title="El correo debe ser una dirección institucional válida (ej. ...@alumnos.udg.mx o ...@udg.mx)">
+                    </div>
+                    <div class="input-group">
+                        <label for="register-password">Contraseña</label>
+                        <input type="password" id="register-password" required minlength="6">
+                    </div>
+                    <div class="interests-section">
+                        <h4>Selecciona tus intereses</h4>
+                        <div class="interest-category">
+                            <p>Académicos</p>
+                            <div class="interest-options">
+                                <label><input type="checkbox" name="academic" value="Cálculo"><span>Cálculo</span></label>
+                                <label><input type="checkbox" name="academic" value="Programación"><span>Programación</span></label>
+                                <label><input type="checkbox" name="academic" value="Historia"><span>Historia</span></label>
+                                <label><input type="checkbox" name="academic" value="Biología"><span>Biología</span></label>
+                            </div>
+                        </div>
+                        <div class="interest-category">
+                            <p>Habilidades</p>
+                            <div class="interest-options">
+                                <label><input type="checkbox" name="skills" value="Diseño Gráfico"><span>Diseño Gráfico</span></label>
+                                <label><input type="checkbox" name="skills" value="Liderazgo"><span>Liderazgo</span></label>
+                                <label><input type="checkbox" name="skills" value="Oratoria"><span>Oratoria</span></label>
+                            </div>
+                        </div>
+                        <div class="interest-category">
+                            <p>Hobbies</p>
+                            <div class="interest-options">
+                                <label><input type="checkbox" name="hobbies" value="Videojuegos"><span>Videojuegos</span></label>
+                                <label><input type="checkbox" name="hobbies" value="Deportes"><span>Deportes</span></label>
+                                <label><input type="checkbox" name="hobbies" value="Música"><span>Música</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Crear Cuenta</button>
+                </form>
+                <div class="switch-view-link">
+                    <p>¿Ya tienes cuenta? <a id="show-login">Inicia sesión</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vista del Dashboard (Página Principal) -->
+        <div id="dashboard-view" class="view">
+            <div class="dashboard-content">
+                <nav class="dashboard-nav">
+                    <div class="profile-info" id="nav-profile-info"> <!-- ID Añadido -->
+                        <img src="" alt="Avatar" class="profile-avatar" id="profile-avatar-img">
+                        <h3 id="welcome-name"></h3>
+                    </div>
+                    <div class="nav-menu">
+                        <ul>
+                            <li data-target="noticias-page" class="active"><span>📰</span> Noticias</li>
+                            <li data-target="search-page"><span>🔍</span> Buscar Perfiles</li>
+                            <li data-target="profile-page" id="profile-nav-item" style="display: none;"><span>👤</span> Perfil</li>
+                            <li data-target="transporte-page"><span>🚗</span> Transporte</li>
+                            <li data-target="apoyo-page"><span>📚</span> Apoyo Académico</li>
+                            <li data-target="ventas-page"><span>🛒</span> Ventas</li>
+                            <li data-target="chat-page"><span>💬</span> Chat</li>
+                            <li data-target="dudas-page"><span>❓</span> Dudas</li>
+                            <!-- ========= NUEVO: Página de Editar Perfil en el Menú ========= -->
+                            <li data-target="edit-profile-page" id="edit-profile-nav-item"><span>✏️</span> Editar Perfil</li>
+                            <li id="nav-logout-li" style="cursor: pointer;"><span>🚪</span> Cerrar Sesión</li>
+                        </ul>
+                    </div>
+                </nav>
+                <main class="dashboard-main">
+                    <!-- Contenido de Noticias -->
+                    <div id="noticias-page" class="dashboard-page active">
+                        <h2>Noticias y Eventos</h2>
+                        <div class="content-grid">
+                            <div class="content-card">
+                                <h3>Hackathon de Innovación 2025</h3>
+                                <p>Participa en el evento de programación más grande del año. ¡Premios increíbles y oportunidad de networking!</p>
+                                <div class="card-tag">Evento Académico</div>
+                            </div>
+                            <div class="content-card">
+                                <h3>Convocatoria de Becas al Extranjero</h3>
+                                <p>El departamento de relaciones internacionales abre la convocatoria para intercambios en Europa y Asia.</p>
+                                <div class="card-tag">Oportunidad</div>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Contenido de Búsqueda de Perfiles -->
+                    <div id="search-page" class="dashboard-page">
+                        <h2>Buscar Perfiles</h2>
+                        <div class="search-bar-container">
+                            <input type="text" id="search-input" placeholder="Buscar por nombre, gustos o habilidades...">
+                            <button id="search-button" class="submit-btn">Buscar</button>
+                        </div>
+                        <div id="search-results" class="content-grid">
+                            <p>Escribe algo en la barra de búsqueda para encontrar a tus compañeros.</p>
+                        </div>
+                    </div>
+                    <!-- Contenido de Página de Perfil -->
+                    <div id="profile-page" class="dashboard-page">
+                        <div id="profile-page-content">
+                            <div class="profile-page-sidebar">
+                                <img src="" id="profile-page-avatar" class="profile-page-avatar" alt="Avatar de perfil">
+                                <h2 id="profile-page-name"></h2>
+                                <p id="profile-page-age"></p>
+                                <button class="submit-btn send-message-btn" id="profile-send-message-btn">Enviar Mensaje</button>
+                            </div>
+                            <div class="profile-page-main">
+                                <h3>Intereses Académicos</h3>
+                                <div class="profile-interests-container" id="profile-academic-interests"></div>
+                                
+                                <h3>Habilidades</h3>
+                                <div class="profile-interests-container" id="profile-skills-interests"></div>
+                                
+                                <h3>Hobbies</h3>
+                                <div class="profile-interests-container" id="profile-hobbies-interests"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Contenido de Transporte -->
+                    <div id="transporte-page" class="dashboard-page">
+                        <h2>Transporte (Carpool)</h2>
+                         <div class="content-grid">
+                            <div class="content-card">
+                                <h3>Ruta: Sur a Campus Norte</h3>
+                                <p>Conductor: Ana López. Salgo a las 6:30 AM. Tengo 2 lugares disponibles en mi auto. Cooperación: $25</p>
+                                <div class="card-tag">Lunes a Viernes</div>
+                            </div>
+                            <div class="content-card">
+                                <h3>Busco Ride: Centro a Campus Sur</h3>
+                                <p>Estudiante: Carlos Ruiz. Necesito transporte por las tardes, mi clase termina a las 5:00 PM. Soy puntual.</p>
+                                <div class="card-tag">Busco Viaje</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Contenido de Apoyo Académico -->
+                    <div id="apoyo-page" class="dashboard-page">
+                        <h2>Apoyo Académico</h2>
+                        <div class="content-grid">
+                            <div class="content-card">
+                                <h3>Tutorías de Cálculo Diferencial</h3>
+                                <p>Impartidas por el Dr. Morales. Todos los martes y jueves a las 4 PM en el edificio B, aula 101. ¡Gratis!</p>
+                                <div class="card-tag">Matemáticas</div>
+                            </div>
+                             <div class="content-card">
+                                <h3>Grupo de Estudio de Programación</h3>
+                                <p>Nos juntamos en la biblioteca los miércoles a las 3 PM para resolver dudas de la clase de Algoritmos.</p>
+                                <div class="card-tag">Ingeniería</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Contenido de Ventas -->
+                    <div id="ventas-page" class="dashboard-page">
+                        <h2>Ventas (Marketplace)</h2>
+                         <div class="content-grid">
+                            <div class="content-card">
+                                <h3>Vendo Libro de Álgebra Lineal</h3>
+                                <p>Autor: Grossman. Edición 7. Casi nuevo, sin rayones. Perfecto para el primer semestre.</p>
+                                <div class="price-tag">$300.00</div>
+                            </div>
+                             <div class="content-card">
+                                <h3>Calculadora Científica Casio</h3>
+                                <p>Modelo FX-991LAX. Funciona perfectamente, incluye tapa. Ideal para exámenes de ingeniería y ciencias.</p>
+                                <div class="price-tag">$250.00</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Contenido de Chat -->
+                    <div id="chat-page" class="dashboard-page">
+                        <h2>Chat</h2>
+                        <div class="chat-layout">
+                            <div class="chat-main-content">
+                                <div class="chat-list-container">
+                                    <ul class="chat-list" id="chat-list">
+                                        <!-- Las conversaciones se cargarán aquí -->
+                                    </ul>
+                                </div>
+                                <div class="chat-messages-container">
+                                    <h3 id="chat-with-header">Selecciona una conversación</h3>
+                                    <div class="message-list" id="message-list">
+                                        <p>Aquí se mostrarán los mensajes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-input-container" id="chat-input-container">
+                                <button class="attachment-btn" title="Enviar Foto">📷</button>
+                                <button class="attachment-btn" title="Enviar Documento">📄</button>
+                                <button class="attachment-btn" title="Enviar Audio">🎤</button>
+                                <input type="text" id="chat-message-input" placeholder="Escribe un mensaje...">
+                                <button id="send-message-btn" title="Enviar">▶️</button>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Contenido de Dudas y Sugerencias -->
+                    <div id="dudas-page" class="dashboard-page">
+                        <h2>Dudas y Sugerencias</h2>
+                        <div class="content-card">
+                            <p>Este sería un foro comunitario para hacer preguntas.</p>
+                        </div>
+                    </div>
+
+                    <!-- ========= NUEVA PÁGINA DE EDITAR PERFIL ========= -->
+                    <div id="edit-profile-page" class="dashboard-page">
+                        <h2>Editar Perfil</h2>
+                        <div id="edit-profile-notification" class="notification"></div>
+                        <form id="edit-profile-form">
+                            <div class="input-group">
+                                <label for="edit-fullname">Nombre Completo</label>
+                                <input type="text" id="edit-fullname" required>
+                            </div>
+                             <div class="input-group">
+                                <label for="edit-age">Edad</label>
+                                <input type="number" id="edit-age" required min="17">
+                            </div>
+                            <div class="input-group">
+                                <label for="edit-picture">URL de Foto de Perfil</label>
+                                <input type="text" id="edit-picture" placeholder="https://ejemplo.com/foto.jpg">
+                            </div>
+                            <div class="input-group">
+                                <label for="edit-password">Nueva Contraseña (dejar en blanco para no cambiar)</label>
+                                <input type="password" id="edit-password" minlength="6" placeholder="Mínimo 6 caracteres">
+                            </div>
+                            
+                            <div class="interests-section">
+                                <h4>Actualizar intereses</h4>
+                                <div class="interest-category">
+                                    <p>Académicos</p>
+                                    <div class="interest-options" id="edit-academic-interests">
+                                        <label><input type="checkbox" name="academic" value="Cálculo"><span>Cálculo</span></label>
+                                        <label><input type="checkbox" name="academic" value="Programación"><span>Programación</span></label>
+                                        <label><input type="checkbox" name="academic" value="Historia"><span>Historia</span></label>
+                                        <label><input type="checkbox" name="academic" value="Biología"><span>Biología</span></label>
+                                    </div>
+                                </div>
+                                <div class="interest-category">
+                                    <p>Habilidades</p>
+                                    <div class="interest-options" id="edit-skills-interests">
+                                        <label><input type="checkbox" name="skills" value="Diseño Gráfico"><span>Diseño Gráfico</span></label>
+                                        <label><input type="checkbox" name="skills" value="Liderazgo"><span>Liderazgo</span></label>
+                                        <label><input type="checkbox" name="skills" value="Oratoria"><span>Oratoria</span></label>
+                                    </div>
+                                </div>
+                                <div class="interest-category">
+                                    <p>Hobbies</p>
+                                    <div class="interest-options" id="edit-hobbies-interests">
+                                        <label><input type="checkbox" name="hobbies" value="Videojuegos"><span>Videojuegos</span></label>
+                                        <label><input type="checkbox" name="hobbies" value="Deportes"><span>Deportes</span></label>
+                                        <label><input type="checkbox" name="hobbies" value="Música"><span>Música</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="submit-btn" style="margin-top: 20px;">Guardar Cambios</button>
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========= INICIO DEL SCRIPT DE SIMULACIÓN ========= -->
+    <script>
+        // --- SIMULACIÓN DE BACKEND Y BASE DE DATOS ---
+        const db = {
+            users: [],
+            chats: []
+        };
+
+        // --- GENERADOR DE DATOS ALEATORIOS ---
+        function generateRandomData() {
+            const maleFirstNames = ["Juan", "José", "Carlos", "Luis", "Miguel", "Javier", "David", "Fernando", "Alejandro", "Daniel"];
+            const femaleFirstNames = ["María", "Ana", "Sofía", "Laura", "Elena", "Carmen", "Isabel", "Patricia", "Lucía", "Marta"];
+            const lastNames = ["González", "Rodríguez", "Pérez", "López", "Martínez", "Sánchez", "Gómez", "Fernández", "Díaz", "Hernández", "Vázquez", "Moreno", "Jiménez"];
+            const academicInterests = ["Cálculo", "Programación", "IA", "Literatura", "Biología", "Derecho Penal"];
+            const skillInterests = ["Liderazgo", "Oratoria", "Diseño Gráfico", "Análisis de Datos"];
+            const hobbyInterests = ["Videojuegos", "Fútbol", "Cine", "Senderismo", "Música", "Ajedrez"];
+
+            const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+            const getNRandom = (arr, n) => {
+                const shuffled = [...arr].sort(() => 0.5 - Math.random());
+                return shuffled.slice(0, n);
+            };
+
+            for (let i = 0; i < 20; i++) {
+                const isMale = Math.random() > 0.5;
+                const gender = isMale ? 'men' : 'women';
+                const firstName = isMale ? getRandom(maleFirstNames) : getRandom(femaleFirstNames);
+                const fullName = `${firstName} ${getRandom(lastNames)}`;
+                const email = `${firstName.toLowerCase()}${i}@alumnos.udg.mx`;
+                db.users.push({
+                    id: i,
+                    fullName, email, password: 'password123',
+                    age: Math.floor(Math.random() * (30 - 17 + 1)) + 17,
+                    profilePictureUrl: `https://randomuser.me/api/portraits/${gender}/${i}.jpg`,
+                    interests: {
+                        academic: getNRandom(academicInterests, 2),
+                        skills: getNRandom(skillInterests, 2),
+                        hobbies: getNRandom(hobbyInterests, 2)
+                    }
+                });
+            }
+            // Usuario de prueba principal
+            db.users.push({
+                id: 50, fullName: "Carlos de Prueba", email: "test@universe.com", password: "password123", age: 22,
+                profilePictureUrl: `https://randomuser.me/api/portraits/men/50.jpg`,
+                interests: { academic: ['Programación', 'Cálculo'], skills: ['Liderazgo'], hobbies: ['Videojuegos'] }
+            });
+            
+            // Generar algunos chats de ejemplo
+            for (let i = 0; i < 3; i++) {
+                const user1 = db.users[i];
+                const user2 = db.users[i + 1];
+                db.chats.push({
+                    id: i,
+                    participants: [user1.id, user2.id],
+                    messages: [
+                        { senderId: user1.id, text: `Hola ${user2.fullName.split(' ')[0]}, ¿cómo vas con el proyecto?` },
+                        { senderId: user2.id, text: `¡Hola! Ahí voy, algo atorado.` },
+                        { senderId: user1.id, text: `¿Nos juntamos mañana para revisarlo?` }
+                    ]
+                });
+            }
+        }
+        generateRandomData(); // Llenar la base de datos ficticia
+
+        // --- ESTADO GLOBAL ---
+        let currentUser = null; // Perfil del usuario actual
+        let currentChatId = null;
+        let currentProfileViewUserId = null;
+
+        // --- ELEMENTOS DEL DOM ---
+        const appContainer = document.getElementById('app-container');
+        const views = document.querySelectorAll('.view');
+        
+        // Vistas de Auth
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const showRegisterLink = document.getElementById('show-register');
+        const showLoginLink = document.getElementById('show-login');
+        const loginNotification = document.getElementById('login-notification');
+        const registerNotification = document.getElementById('register-notification');
+
+        // Vistas de Dashboard
+        const profileInfoDiv = document.getElementById('nav-profile-info');
+        const logoutBtn = document.getElementById('nav-logout-li');
+        const navMenuItems = document.querySelectorAll('.nav-menu li[data-target]');
+        const dashboardPages = document.querySelectorAll('.dashboard-page');
+        const profileAvatarImg = document.getElementById('profile-avatar-img');
+        const welcomeNameEl = document.getElementById('welcome-name');
+        const profileNavItem = document.getElementById('profile-nav-item');
+        const editProfileNavItem = document.getElementById('edit-profile-nav-item');
+
+        // Vistas de Chat
+        const chatListUl = document.getElementById('chat-list');
+        const messageListDiv = document.getElementById('message-list');
+        const chatWithHeader = document.getElementById('chat-with-header');
+        const chatMessageInput = document.getElementById('chat-message-input');
+        const sendMessageBtn = document.getElementById('send-message-btn');
+        const chatInputContainer = document.getElementById('chat-input-container');
+
+        // Vistas de Búsqueda y Perfil
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const searchResultsDiv = document.getElementById('search-results');
+        const profilePageSendMessageBtn = document.getElementById('profile-send-message-btn');
+        
+        // Vistas de Página de Perfil (Visualización)
+        const profilePageAvatar = document.getElementById('profile-page-avatar');
+        const profilePageName = document.getElementById('profile-page-name');
+        const profilePageAge = document.getElementById('profile-page-age');
+        const profileAcademicInterests = document.getElementById('profile-academic-interests');
+        const profileSkillsInterests = document.getElementById('profile-skills-interests');
+        const profileHobbiesInterests = document.getElementById('profile-hobbies-interests');
+        
+        // Vistas de Editar Perfil
+        const editProfileForm = document.getElementById('edit-profile-form');
+        const editProfileNotification = document.getElementById('edit-profile-notification');
+
+        // --- FUNCIONES AUXILIARES ---
+
+        // Mostrar/Ocultar Notificaciones
+        function showNotification(el, message, type = 'error') {
+            el.textContent = message;
+            el.className = `notification ${type}`;
+            el.style.display = 'block';
+            setTimeout(() => {
+                el.style.display = 'none';
+            }, 3000);
+        }
+
+        // Obtener intereses seleccionados de un formulario
+        function getSelectedInterests(formId, categoryName) {
+            const interests = [];
+            const checkboxes = document.querySelectorAll(`#${formId} input[name="${categoryName}"]:checked`);
+            checkboxes.forEach(cb => interests.push(cb.value));
+            return interests;
+        }
+
+        // Rellenar checkboxes de intereses
+        function setInterestsCheckboxes(containerId, userInterests) {
+            if (!userInterests) return;
+            const checkboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]`);
+            checkboxes.forEach(cb => {
+                cb.checked = userInterests.includes(cb.value);
+            });
+        }
+        
+        // Renderizar intereses en una lista de tags
+        function renderInterestTags(container, interests) {
+            if (!container) return;
+            if (!interests || interests.length === 0) {
+                container.innerHTML = `<p style="color: var(--light-text-color);">No hay intereses seleccionados.</p>`;
+                return;
+            }
+            container.innerHTML = interests.map(i => `<span class="interest-tag">${i}</span>`).join('');
+        }
+        
+        // Generar una URL de avatar aleatoria para nuevos usuarios
+        function getRandomAvatar() {
+            const gender = Math.random() > 0.5 ? 'men' : 'women';
+            const id = Math.floor(Math.random() * 99) + 1;
+            return `https://randomuser.me/api/portraits/${gender}/${id}.jpg`;
+        }
+
+        // --- NAVEGACIÓN Y VISTAS ---
+        function showView(viewId) {
+            views.forEach(view => view.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            appContainer.classList.toggle('dashboard-mode', viewId === 'dashboard-view');
+        }
+
+        function showDashboardPage(targetId) {
+            dashboardPages.forEach(page => page.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+
+            if (targetId !== 'profile-page') {
+                profileNavItem.style.display = 'none';
+            }
+
+            navMenuItems.forEach(item => {
+                item.classList.toggle('active', item.dataset.target === targetId);
+            });
+            editProfileNavItem.classList.toggle('active', targetId === 'edit-profile-page');
+        }
+
+        // --- MANEJO DE AUTENTICACIÓN (LOGIN, REGISTER, LOGOUT) ---
+
+        // 1. Registro de Nuevo Usuario
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const fullName = document.getElementById('register-fullname').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            if (password.length < 6) {
+                 showNotification(registerNotification, 'La contraseña debe tener al menos 6 caracteres.', 'error');
+                 return;
+            }
+            
+            // Validar que el email sea UDG
+            const emailRegex = /.+@(.+\.)?udg\.mx$/;
+            if (!emailRegex.test(email)) {
+                 showNotification(registerNotification, 'El correo debe ser institucional (terminar en .udg.mx).', 'error');
+                 return;
+            }
+
+            // Validar que el email no exista
+            if (db.users.find(u => u.email === email)) {
+                showNotification(registerNotification, 'Este email ya está registrado. Intenta iniciar sesión.', 'error');
+                return;
+            }
+            
+            // Crear nuevo usuario
+            const newUser = {
+                id: db.users.length ? Math.max(...db.users.map(u => u.id)) + 1 : 0,
+                fullName,
+                email,
+                password, // En una app real, esto debería estar hasheado
+                age: 18, // Edad por defecto
+                profilePictureUrl: getRandomAvatar(),
+                interests: {
+                    academic: getSelectedInterests('register-form', 'academic'),
+                    skills: getSelectedInterests('register-form', 'skills'),
+                    hobbies: getSelectedInterests('register-form', 'hobbies')
+                }
+            };
+            
+            db.users.push(newUser);
+            console.log("Usuario simulado creado:", newUser);
+            console.log("DB de usuarios:", db.users);
+            
+            showNotification(registerNotification, '¡Cuenta creada con éxito! Serás redirigido.', 'success');
+            setTimeout(() => {
+                showView('login-view');
+                registerForm.reset();
+            }, 2000);
+        });
+
+        // 2. Inicio de Sesión
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const user = db.users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                console.log("Inicio de sesión exitoso:", currentUser);
+                setupDashboard(currentUser);
+                showView('dashboard-view');
+                loginNotification.style.display = 'none';
+            } else {
+                showNotification(loginNotification, 'Email o contraseña incorrectos.', 'error');
+            }
+        });
+
+        // 3. Cerrar Sesión
+        logoutBtn.addEventListener('click', () => {
+            currentUser = null;
+            showView('login-view');
+            console.log("Cerrando sesión...");
+        });
+
+        // 4. Links para cambiar entre Login y Registro
+        showRegisterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showView('register-view');
+        });
+
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showView('login-view');
+        });
+
+        // --- LÓGICA DEL DASHBOARD ---
+
+        // 1. Configurar el Dashboard al iniciar sesión
+        function setupDashboard(userProfile) {
+            welcomeNameEl.textContent = userProfile.fullName;
+            profileAvatarImg.src = userProfile.profilePictureUrl || getRandomAvatar();
+            
+            chatInputContainer.style.display = 'none'; // Ocultar chat al inicio
+            renderChatList(); // Renderizar la lista de chats
+            
+            // Navegación del menú
+            navMenuItems.forEach(item => {
+                item.addEventListener('click', () => showDashboardPage(item.dataset.target));
+            });
+
+            // Navegación a "Editar Perfil"
+            editProfileNavItem.addEventListener('click', () => {
+                loadProfileForEditing(currentUser);
+                showDashboardPage('edit-profile-page');
+            });
+
+            // Clic en la foto/nombre del perfil para ir a editar
+            profileInfoDiv.addEventListener('click', () => {
+                 loadProfileForEditing(currentUser);
+                 showDashboardPage('edit-profile-page');
+            });
+        }
+        
+        // 2. Cargar Perfil para Edición
+        function loadProfileForEditing(userProfile) {
+            if (!userProfile) return;
+            document.getElementById('edit-fullname').value = userProfile.fullName;
+            document.getElementById('edit-age').value = userProfile.age || 18;
+            document.getElementById('edit-picture').value = userProfile.profilePictureUrl;
+            document.getElementById('edit-password').value = '';
+            
+            setInterestsCheckboxes('edit-academic-interests', userProfile.interests.academic || []);
+            setInterestsCheckboxes('edit-skills-interests', userProfile.interests.skills || []);
+            setInterestsCheckboxes('edit-hobbies-interests', userProfile.interests.hobbies || []);
+        }
+
+        // 3. Guardar Perfil Editado
+        editProfileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+            
+            const newPassword = document.getElementById('edit-password').value;
+            
+            // Encontrar al usuario en la BD simulada
+            const userInDb = db.users.find(u => u.id === currentUser.id);
+            if (!userInDb) return;
+
+            // Actualizar los datos
+            userInDb.fullName = document.getElementById('edit-fullname').value;
+            userInDb.age = parseInt(document.getElementById('edit-age').value, 10);
+            userInDb.profilePictureUrl = document.getElementById('edit-picture').value || getRandomAvatar();
+            userInDb.interests = {
+                academic: getSelectedInterests('edit-profile-form', 'academic'),
+                skills: getSelectedInterests('edit-profile-form', 'skills'),
+                hobbies: getSelectedInterests('edit-profile-form', 'hobbies')
+            };
+
+            if (newPassword && newPassword.length >= 6) {
+                userInDb.password = newPassword;
+            }
+            
+            // Actualizar el estado local
+            currentUser = { ...userInDb };
+            
+            // Actualizar la UI del dashboard
+            welcomeNameEl.textContent = currentUser.fullName;
+            profileAvatarImg.src = currentUser.profilePictureUrl;
+            
+            showNotification(editProfileNotification, 'Perfil actualizado con éxito.', 'success');
+        });
+
+
+        // --- LÓGICA DE CHAT ---
+
+        // 1. Renderizar la lista de chats del usuario
+        function renderChatList() {
+            if (!chatListUl || !currentUser) return;
+            chatListUl.innerHTML = '';
+            
+            const userChats = db.chats.filter(c => c.participants.includes(currentUser.id));
+
+            if (userChats.length === 0) {
+                chatListUl.innerHTML = '<p style="padding: 15px; color: var(--light-text-color); text-align: center;">No tienes chats. ¡Busca a alguien!</p>';
+                return;
+            }
+            
+            userChats.forEach(chat => {
+                const otherUserId = chat.participants.find(p => p !== currentUser.id);
+                if (!otherUserId) return;
+                
+                const otherUser = db.users.find(u => u.id === otherUserId);
+                if (!otherUser) return;
+                
+                let lastMessage = chat.messages[chat.messages.length - 1];
+                let lastMessageText = 'Conversación iniciada';
+                if(lastMessage) {
+                    lastMessageText = (lastMessage.senderId === currentUser.id ? "Tú: " : "") + lastMessage.text;
+                }
+
+                const li = document.createElement('li');
+                li.className = 'chat-list-item';
+                li.dataset.chatId = chat.id;
+                li.innerHTML = `
+                    <img src="${otherUser.profilePictureUrl}" alt="Avatar" class="chat-list-avatar">
+                    <div class="chat-list-text-container">
+                        <div class="chat-list-text">
+                            <h4>${otherUser.fullName}</h4>
+                            <p>${lastMessageText}</p>
+                        </div>
+                    </div>
+                    <span class="delete-chat-btn" title="Borrar conversación">🗑️</span>`;
+                
+                li.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('delete-chat-btn')) {
+                        e.stopPropagation();
+                        deleteChat(chat.id);
+                    } else {
+                        openChat(chat.id, otherUser);
+                    }
+                });
+                chatListUl.appendChild(li);
+            });
+        }
+
+        // 2. Abrir una conversación
+        function openChat(chatId, otherParticipant) {
+            currentChatId = chatId;
+            currentProfileViewUserId = otherParticipant.id;
+            
+            document.querySelectorAll('.chat-list-item').forEach(item => {
+                item.classList.toggle('active', parseInt(item.dataset.chatId) === chatId);
+            });
+            
+            chatWithHeader.textContent = `Conversación con ${otherParticipant.fullName}`;
+            chatInputContainer.style.display = 'flex';
+            
+            renderMessages(chatId, otherParticipant);
+        }
+
+        // 3. Renderizar mensajes (una sola vez)
+        function renderMessages(chatId, otherParticipant) {
+            const chat = db.chats.find(c => c.id === chatId);
+            messageListDiv.innerHTML = '';
+            
+            if (!chat || chat.messages.length === 0) {
+                messageListDiv.innerHTML = '<p style="text-align: center; color: var(--light-text-color);">Envía el primer mensaje.</p>';
+                return;
+            }
+            
+            chat.messages.forEach((msg, index) => {
+                const messageType = msg.senderId === currentUser.id ? 'sent' : 'received';
+                const senderAvatar = messageType === 'sent' ? currentUser.profilePictureUrl : otherParticipant.profilePictureUrl;
+                
+                const messageContainer = document.createElement('div');
+                messageContainer.className = `message-container ${messageType}`;
+                messageContainer.innerHTML = `
+                    <img src="${senderAvatar}" alt="Avatar" class="message-avatar">
+                    <div class="message-bubble">${msg.text}</div>
+                    ${messageType === 'sent' ? `<span class="delete-msg-btn" data-msg-index="${index}" title="Eliminar mensaje">🗑️</span>` : ''}
+                `;
+                messageListDiv.appendChild(messageContainer);
+            });
+            messageListDiv.scrollTop = messageListDiv.scrollHeight;
+        }
+
+        // 4. Enviar un mensaje
+        function sendMessage() {
+            const text = chatMessageInput.value.trim();
+            if (!text || currentChatId === null || !currentUser) return;
+            
+            const chat = db.chats.find(c => c.id === currentChatId);
+            if (!chat) return;
+
+            chat.messages.push({
+                senderId: currentUser.id,
+                text: text
+            });
+            
+            const otherUser = db.users.find(u => u.id === chat.participants.find(p => p !== currentUser.id));
+            
+            renderMessages(currentChatId, otherUser); // Re-renderizar mensajes
+            renderChatList(); // Actualizar la lista de chats (para el último mensaje)
+            chatMessageInput.value = '';
+        }
+        
+        // 5. Borrar un mensaje
+        messageListDiv.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-msg-btn')) {
+                const messageIndex = parseInt(e.target.dataset.msgIndex);
+                deleteMessage(messageIndex);
+            }
+        });
+
+        function deleteMessage(messageIndex) {
+            if (currentChatId === null) return;
+            const chat = db.chats.find(c => c.id === currentChatId);
+            if (!chat) return;
+
+            chat.messages.splice(messageIndex, 1);
+            
+            const otherUser = db.users.find(u => u.id === chat.participants.find(p => p !== currentUser.id));
+            renderMessages(currentChatId, otherUser);
+            renderChatList();
+        }
+
+        // 7. Borrar una conversación
+        function deleteChat(chatId) {
+            // Usamos un simple "confirm" para la simulación
+            if (!confirm("¿Seguro que quieres borrar esta conversación?")) {
+                return;
+            }
+            
+            db.chats = db.chats.filter(c => c.id !== chatId);
+            
+            if (currentChatId === chatId) {
+                currentChatId = null;
+                messageListDiv.innerHTML = '<p>Aquí se mostrarán los mensajes.</p>';
+                chatWithHeader.textContent = 'Selecciona una conversación';
+                chatInputContainer.style.display = 'none';
+            }
+            renderChatList();
+        }
+        
+        // 8. Iniciar un chat (desde Búsqueda o Perfil)
+        function startOrOpenChat(targetUserId) {
+            if (!currentUser || targetUserId === currentUser.id) return;
+            
+            let chat = db.chats.find(c => 
+                c.participants.includes(currentUser.id) && 
+                c.participants.includes(targetUserId)
+            );
+            
+            const otherUser = db.users.find(u => u.id === targetUserId);
+            if (!otherUser) return;
+
+            if (!chat) {
+                // Crear chat
+                chat = {
+                    id: db.chats.length ? Math.max(...db.chats.map(c => c.id)) + 1 : 0,
+                    participants: [currentUser.id, targetUserId],
+                    messages: []
+                };
+                db.chats.push(chat);
+                renderChatList();
+            }
+            
+            showDashboardPage('chat-page');
+            openChat(chat.id, otherUser);
+        }
+
+        // --- LÓGICA DE BÚSQUEDA Y PERFIL ---
+
+        // 1. Ejecutar Búsqueda
+        function renderSearchResults() {
+            const queryText = searchInput.value.toLowerCase().trim();
+            searchResultsDiv.innerHTML = '';
+            
+            if (!queryText) { 
+                searchResultsDiv.innerHTML = '<p>Escribe algo para encontrar a tus compañeros.</p>'; 
+                return; 
+            }
+
+            const results = db.users.filter(user => {
+                if (user.id === currentUser.id) return false;
+                
+                const normalizedName = user.fullName.toLowerCase();
+                const allInterests = [
+                    ...(user.interests.academic || []),
+                    ...(user.interests.skills || []),
+                    ...(user.interests.hobbies || [])
+                ].map(i => i.toLowerCase());
+
+                return normalizedName.includes(queryText) || allInterests.some(i => i.includes(queryText));
+            });
+            
+
+            if (results.length === 0) { 
+                searchResultsDiv.innerHTML = '<p>No se encontraron perfiles.</p>'; 
+                return; 
+            }
+            
+            results.forEach(user => {
+                const card = document.createElement('div');
+                card.className = 'content-card profile-card';
+                card.dataset.userId = user.id;
+                const allInterests = [
+                    ...(user.interests?.academic || []), 
+                    ...(user.interests?.skills || []), 
+                    ...(user.interests?.hobbies || [])
+                ];
+                const interestsHTML = allInterests.length > 0 ? 
+                    allInterests.map(i => `<span class="interest-tag">${i}</span>`).join('') :
+                    '<p style="font-size: 0.85rem; color: var(--light-text-color);">Sin intereses listados.</p>';
+                
+                card.innerHTML = `
+                    <div class="profile-card-header" data-user-id="${user.id}">
+                        <img src="${user.profilePictureUrl}" alt="Avatar" class="search-avatar">
+                        <div class="profile-card-info">
+                            <h4>${user.fullName}</h4>
+                            <p class="age-info">${user.age || 'N/A'} años</p>
+                        </div>
+                    </div>
+                    <div class="interests-list">${interestsHTML}</div>
+                    <button class="submit-btn send-message-btn" data-user-id="${user.id}">Enviar Mensaje</button>
+                `;
+                searchResultsDiv.appendChild(card);
+            });
+        }
+
+        // 2. Mostrar Página de Perfil (de otro usuario)
+        function showProfilePage(userId) {
+            if (!userId) return;
+            const user = db.users.find(u => u.id === userId);
+            if (!user) {
+                console.error("Perfil no encontrado");
+                return;
+            }
+            
+            currentProfileViewUserId = userId; // Guardar a quién estamos viendo
+
+            profilePageAvatar.src = user.profilePictureUrl;
+            profilePageName.textContent = user.fullName;
+            profilePageAge.textContent = `${user.age || 'N/A'} años`;
+
+            renderInterestTags(profileAcademicInterests, user.interests.academic || []);
+            renderInterestTags(profileSkillsInterests, user.interests.skills || []);
+            renderInterestTags(profileHobbiesInterests, user.interests.hobbies || []);
+
+            profileNavItem.style.display = 'flex'; // Mostrar la pestaña "Perfil"
+            showDashboardPage('profile-page');
+        }
+
+        // --- LISTENERS DE EVENTOS GLOBALES ---
+        
+        // Búsqueda
+        searchButton.addEventListener('click', renderSearchResults);
+        searchInput.addEventListener('keyup', (e) => e.key === 'Enter' && renderSearchResults());
+        
+        // Enviar Mensaje
+        sendMessageBtn.addEventListener('click', sendMessage);
+        chatMessageInput.addEventListener('keyup', (e) => e.key === 'Enter' && sendMessage());
+
+        // Clics en Búsqueda (Ver Perfil o Enviar Mensaje)
+        searchResultsDiv.addEventListener('click', (e) => {
+            const cardHeader = e.target.closest('.profile-card-header');
+            const button = e.target.closest('.send-message-btn');
+            
+            if (button) {
+                e.stopPropagation();
+                startOrOpenChat(parseInt(button.dataset.userId));
+            } else if (cardHeader) {
+                showProfilePage(parseInt(cardHeader.dataset.userId));
+            }
+        });
+
+        // Clic en header de chat para ver perfil
+        chatWithHeader.addEventListener('click', () => {
+            if (currentProfileViewUserId) {
+                showProfilePage(currentProfileViewUserId);
+            }
+        });
+
+        // Clic en "Enviar Mensaje" desde la página de perfil
+        profilePageSendMessageBtn.addEventListener('click', () => {
+            if (currentProfileViewUserId) {
+                startOrOpenChat(currentProfileViewUserId);
+            }
+        });
+
+    </script>
+</body>
+</html>
+
